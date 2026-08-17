@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Merchant Tracking</title>
 
+  <!-- LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 30px 20px;
-      background: #ffffff;
+      padding: 40px 20px;
       text-align: center;
+      background: #ffffff;
     }
 
     .container {
@@ -24,230 +30,309 @@
 
     h1 {
       font-size: 24px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
-    p {
-      color: #666;
+    #message {
+      color: #555;
       line-height: 1.6;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 20px;
-      border: none;
-      border-radius: 8px;
-      background: #06c755;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
     }
 
     #status {
       margin-top: 20px;
       font-size: 14px;
+      color: #888;
+    }
+
+    .success {
+      color: #06c755;
+    }
+
+    .error {
+      color: #d93025;
     }
   </style>
+
 </head>
+
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <h1>Merchant Tracking</h1>
+    <h1>Merchant Tracking</h1>
 
-  <p id="message">
-    กำลังตรวจสอบข้อมูล...
-  </p>
+    <p id="message">
+      กำลังตรวจสอบข้อมูล...
+    </p>
 
-  <button id="continueButton" style="display:none;">
-    ดำเนินการต่อ
-  </button>
+    <div id="status"></div>
 
-  <div id="status"></div>
-
-</div>
+  </div>
 
 
-<script>
+  <script>
 
-  // ==========================================
-  // CONFIG
-  // ==========================================
+    // ==================================================
+    // CONFIG
+    // ==================================================
 
-  const LIFF_ID = "2011137760-Da2862OU";
+    const LIFF_ID = "2011137760-Da2862OU";
 
-  // เอา URL Web App ของ Google Apps Script มาใส่ตรงนี้
-  const GOOGLE_SCRIPT_URL = "ใส่_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
-
-
-  // ==========================================
-  // INITIALIZE LIFF
-  // ==========================================
-
-  async function main() {
-
-    try {
-
-      await liff.init({
-        liffId: LIFF_ID
-      });
-
-      console.log("LIFF initialized");
+    const GOOGLE_SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbxcuzMhNbehlk_ce2pejXjMqkKcL2CJJgjAcz6r08emaGLSGb48AvQg4gLZOH3Glchr/exec";
 
 
-      // ถ้ายังไม่ได้ login
-      if (!liff.isLoggedIn()) {
+    // ==================================================
+    // MAIN
+    // ==================================================
 
-        liff.login();
-
-        return;
-      }
-
-
-      // ==========================================
-      // GET LINE PROFILE
-      // ==========================================
-
-      const profile = await liff.getProfile();
-
-      console.log("LINE Profile:", profile);
-
-
-      const lineUserId = profile.userId;
-      const displayName = profile.displayName;
-
-
-      // ==========================================
-      // CHECK FRIENDSHIP
-      // ==========================================
-
-      let friendFlag = false;
+    async function main() {
 
       try {
 
-        const friendship = await liff.getFriendship();
+        showMessage(
+          "กำลังเชื่อมต่อกับ LINE...",
+          ""
+        );
 
-        friendFlag = friendship.friendFlag;
+
+        // ------------------------------------------------
+        // 1. Initialize LIFF
+        // ------------------------------------------------
+
+        await liff.init({
+          liffId: LIFF_ID
+        });
+
+
+        console.log("LIFF initialized");
+
+
+        // ------------------------------------------------
+        // 2. Check Login
+        // ------------------------------------------------
+
+        if (!liff.isLoggedIn()) {
+
+          showMessage(
+            "กำลังเข้าสู่ระบบ LINE...",
+            ""
+          );
+
+          liff.login();
+
+          return;
+        }
+
+
+        // ------------------------------------------------
+        // 3. Get LINE Profile
+        // ------------------------------------------------
+
+        const profile = await liff.getProfile();
+
+        console.log("LINE Profile:", profile);
+
+
+        const lineUserId =
+          profile.userId || "";
+
+        const displayName =
+          profile.displayName || "";
+
+
+        // ------------------------------------------------
+        // 4. Check Friend Status
+        // ------------------------------------------------
+
+        let friendFlag = false;
+
+        try {
+
+          const friendship =
+            await liff.getFriendship();
+
+          friendFlag =
+            friendship.friendFlag === true;
+
+          console.log(
+            "Friend Status:",
+            friendFlag
+          );
+
+        } catch (friendError) {
+
+          console.log(
+            "Friendship check error:",
+            friendError
+          );
+
+        }
+
+
+        // ------------------------------------------------
+        // 5. Get Merchant ID from URL
+        // ------------------------------------------------
+
+        const urlParams =
+          new URLSearchParams(
+            window.location.search
+          );
+
+
+        const merchantId =
+          urlParams.get("merchantId") || "";
+
+
+        console.log(
+          "Merchant ID:",
+          merchantId
+        );
+
+
+        // ------------------------------------------------
+        // 6. Prepare Data
+        // ------------------------------------------------
+
+        const trackingData = {
+
+          lineUserId: lineUserId,
+
+          displayName: displayName,
+
+          merchantId: merchantId,
+
+          friendFlag: friendFlag,
+
+          status: "unlocked"
+
+        };
+
+
+        console.log(
+          "Tracking Data:",
+          trackingData
+        );
+
+
+        // ------------------------------------------------
+        // 7. Send Data to Google Apps Script
+        // ------------------------------------------------
+
+        await sendToGoogleSheet(
+          trackingData
+        );
+
+
+        // ------------------------------------------------
+        // 8. Show Success
+        // ------------------------------------------------
+
+        showMessage(
+          "ปลดล็อกสำเร็จ",
+          "success"
+        );
+
+        document.getElementById("status")
+          .innerText =
+          "บันทึกข้อมูลเรียบร้อยแล้ว";
+
 
       } catch (error) {
 
-        console.log("Friendship check failed:", error);
+        console.error(error);
+
+        showMessage(
+          "เกิดข้อผิดพลาด",
+          "error"
+        );
+
+        document.getElementById("status")
+          .innerText =
+          error.message || "Unknown error";
 
       }
 
-
-      // ==========================================
-      // GET MERCHANT ID FROM URL
-      // ==========================================
-
-      const params = new URLSearchParams(window.location.search);
-
-      const merchantId = params.get("merchantId") || "";
+    }
 
 
-      // ==========================================
-      // SEND TRACKING DATA
-      // ==========================================
+    // ==================================================
+    // SEND DATA TO GOOGLE APPS SCRIPT
+    // ==================================================
 
-      const trackingData = {
+    async function sendToGoogleSheet(data) {
 
-        lineUserId: lineUserId,
+      try {
 
-        displayName: displayName,
+        await fetch(
+          GOOGLE_SCRIPT_URL,
+          {
+            method: "POST",
 
-        merchantId: merchantId,
+            mode: "no-cors",
 
-        friendFlag: friendFlag,
+            headers: {
+              "Content-Type":
+                "text/plain;charset=utf-8"
+            },
 
-        status: "unlocked"
-
-      };
-
-
-      console.log("Tracking Data:", trackingData);
-
-
-      await sendTrackingData(trackingData);
-
-
-      // ==========================================
-      // SHOW SUCCESS
-      // ==========================================
-
-      document.getElementById("message").innerText =
-        "บันทึกข้อมูลเรียบร้อยแล้ว";
-
-      document.getElementById("continueButton").style.display =
-        "block";
+            body: JSON.stringify(data)
+          }
+        );
 
 
-      // ==========================================
-      // CONTINUE BUTTON
-      // ==========================================
-
-      document.getElementById("continueButton").onclick = function() {
-
-        // ใส่ URL ปลายทางของ Merchant App ตรงนี้
-        window.location.href = "https://YOUR-MERCHANT-APP-URL";
-
-      };
+        console.log(
+          "Data sent to Google Apps Script"
+        );
 
 
-    } catch (error) {
+      } catch (error) {
 
-      console.error(error);
+        console.error(
+          "Send data error:",
+          error
+        );
 
-      document.getElementById("message").innerText =
-        "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง";
+        throw error;
 
-      document.getElementById("status").innerText =
-        error.message;
+      }
 
     }
 
-  }
+
+    // ==================================================
+    // SHOW MESSAGE
+    // ==================================================
+
+    function showMessage(
+      message,
+      type
+    ) {
+
+      const messageElement =
+        document.getElementById(
+          "message"
+        );
+
+      messageElement.innerText =
+        message;
 
 
-  // ==========================================
-  // SEND DATA TO GOOGLE APPS SCRIPT
-  // ==========================================
-
-  async function sendTrackingData(data) {
-
-    try {
-
-      await fetch(GOOGLE_SCRIPT_URL, {
-
-        method: "POST",
-
-        mode: "no-cors",
-
-        headers: {
-
-          "Content-Type": "text/plain;charset=utf-8"
-
-        },
-
-        body: JSON.stringify(data)
-
-      });
-
-      console.log("Tracking sent");
-
-    } catch (error) {
-
-      console.error("Tracking error:", error);
+      messageElement.className =
+        type;
 
     }
 
-  }
 
+    // ==================================================
+    // START
+    // ==================================================
 
-  main();
+    main();
 
-</script>
+  </script>
 
 </body>
+
 </html>
