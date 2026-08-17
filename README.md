@@ -338,7 +338,7 @@ const LIFF_ID =
 
 
 // ==========================================
-// GOOGLE APPS SCRIPT WEB APP
+// GOOGLE APPS SCRIPT  APP
 // ==========================================
 //
 // IMPORTANT:
@@ -351,7 +351,7 @@ const LIFF_ID =
 //
 
 const WEB_APP_URL =
-  "ใส่_WEB_APP_URL_ที่ลงท้ายด้วย_/exec";
+  "https://script.google.com/macros/s/AKfycbwiXZYczfQUlyl9gM98ozoziseAtmylOxIN-VGDx9bBLl4w0kMvQp82dFrqaDS6Jtt4/exec";
 
 
 // ==========================================
