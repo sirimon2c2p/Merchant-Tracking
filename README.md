@@ -12,7 +12,10 @@
 
   <title>เชื่อมบัญชีร้านค้า | BlueTap</title>
 
+
+  <!-- LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
 
   <style>
 
@@ -20,8 +23,10 @@
       box-sizing: border-box;
     }
 
+
     body {
       margin: 0;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -30,6 +35,7 @@
         sans-serif;
 
       background: #f5f7fa;
+
       color: #172033;
     }
 
@@ -38,7 +44,9 @@
       min-height: 100vh;
 
       display: flex;
+
       justify-content: center;
+
       align-items: center;
 
       padding: 24px;
@@ -47,6 +55,7 @@
 
     .card {
       width: 100%;
+
       max-width: 420px;
 
       background: #ffffff;
@@ -64,6 +73,7 @@
       text-align: center;
 
       font-size: 24px;
+
       font-weight: 700;
 
       margin-bottom: 28px;
@@ -228,8 +238,10 @@
 
 
     <div class="description">
+
       กรุณากรอก Merchant ID
       เพื่อเชื่อมบัญชีร้านค้าของคุณกับ LINE OA
+
     </div>
 
 
@@ -268,8 +280,10 @@
 
 
     <div class="footer">
-      ข้อมูล LINE และข้อมูลร้านค้าจะถูกบันทึก
-      เพื่อใช้สำหรับการเชื่อมบัญชีเท่านั้น
+
+      ข้อมูล LINE และข้อมูลร้านค้า
+      จะถูกใช้สำหรับการเชื่อมบัญชีเท่านั้น
+
     </div>
 
 
@@ -281,18 +295,25 @@
 <script>
 
 
+// ==========================================
+// LIFF CONFIG
+// ==========================================
+
 const LIFF_ID =
   "2011132851-VrQEJ6SP";
 
+
+// ==========================================
+// GOOGLE APPS SCRIPT WEB APP
+// ==========================================
 
 const WEB_APP_URL =
   "https://script.google.com/macros/s/AKfycbyKQ7qpjq-XB4P2FgFYs7YvYNnnJ5Cr-_3scRK3Fs_6w2JwqkEulE27BRrVdEBJRBRN/exec";
 
 
-/* =========================
-   INITIALIZE LIFF
-========================= */
-
+// ==========================================
+// INITIALIZE LIFF
+// ==========================================
 
 async function main() {
 
@@ -313,6 +334,7 @@ async function main() {
 
     }
 
+
   } catch (error) {
 
     console.error(error);
@@ -327,10 +349,9 @@ async function main() {
 }
 
 
-/* =========================
-   SUBMIT
-========================= */
-
+// ==========================================
+// SUBMIT FORM
+// ==========================================
 
 async function submitForm() {
 
@@ -348,12 +369,11 @@ async function submitForm() {
     );
 
 
-  /* ตรวจ Merchant ID */
+  // ========================================
+  // CHECK MERCHANT ID
+  // ========================================
 
-
-  if (
-    merchantId.length !== 10
-  ) {
+  if (merchantId.length !== 10) {
 
     showResult(
       "กรุณากรอก Merchant ID ให้ครบ 10 ตัวอักษร",
@@ -380,10 +400,9 @@ async function submitForm() {
     );
 
 
-    /* =========================
-       GET LINE PROFILE
-    ========================= */
-
+    // ========================================
+    // GET LINE PROFILE
+    // ========================================
 
     const profile =
       await liff.getProfile();
@@ -397,59 +416,36 @@ async function submitForm() {
       profile.displayName;
 
 
-    /* =========================
-       SEND DATA
-    ========================= */
+    // ========================================
+    // CREATE REQUEST URL
+    // ========================================
+
+    const requestUrl =
+      WEB_APP_URL +
+      "?userId=" +
+      encodeURIComponent(userId) +
+      "&displayName=" +
+      encodeURIComponent(displayName) +
+      "&merchantId=" +
+      encodeURIComponent(merchantId);
 
 
-    const formData =
-      new URLSearchParams();
-
-
-    formData.append(
-      "userId",
-      userId
-    );
-
-
-    formData.append(
-      "displayName",
-      displayName
-    );
-
-
-    formData.append(
-      "merchantId",
-      merchantId
-    );
-
+    // ========================================
+    // SEND DATA TO GOOGLE APPS SCRIPT
+    // ========================================
 
     await fetch(
-      WEB_APP_URL,
+      requestUrl,
       {
-
-        method: "POST",
-
-        mode: "no-cors",
-
-        headers: {
-
-          "Content-Type":
-            "application/x-www-form-urlencoded"
-
-        },
-
-        body:
-          formData.toString()
-
+        method: "GET",
+        mode: "no-cors"
       }
     );
 
 
-    /* =========================
-       SUCCESS
-    ========================= */
-
+    // ========================================
+    // SUCCESS
+    // ========================================
 
     showResult(
       "เชื่อมบัญชีสำเร็จ 🎉",
@@ -483,10 +479,9 @@ async function submitForm() {
 }
 
 
-/* =========================
-   MESSAGE
-========================= */
-
+// ==========================================
+// SHOW MESSAGE
+// ==========================================
 
 function showResult(
   message,
@@ -508,6 +503,10 @@ function showResult(
 
 }
 
+
+// ==========================================
+// START LIFF
+// ==========================================
 
 main();
 
