@@ -286,7 +286,7 @@ const LIFF_ID =
 
 
 const WEB_APP_URL =
-  "ใส่_APPS_SCRIPT_WEB_APP_URL";
+  "https://script.google.com/macros/s/AKfycbyKQ7qpjq-XB4P2FgFYs7YvYNnnJ5Cr-_3scRK3Fs_6w2JwqkEulE27BRrVdEBJRBRN/exec";
 
 
 /* =========================
