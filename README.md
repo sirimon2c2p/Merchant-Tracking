@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="th">
 
 <head>
 
@@ -11,15 +10,200 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>
-    Merchant Verification
-  </title>
+  <title>เชื่อมบัญชีร้านค้า | BlueTap</title>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+      background: #f5f7fa;
+      color: #172033;
+    }
 
 
-  <script
-    src="https://static.line-scdn.net/liff/edge/2/sdk.js">
-  </script>
+    .container {
+      min-height: 100vh;
 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 24px;
+    }
+
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+
+      background: #ffffff;
+
+      border-radius: 20px;
+
+      padding: 32px 28px;
+
+      box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.08);
+    }
+
+
+    .logo {
+      text-align: center;
+
+      font-size: 24px;
+      font-weight: 700;
+
+      margin-bottom: 28px;
+    }
+
+
+    .title {
+      font-size: 22px;
+
+      font-weight: 700;
+
+      margin-bottom: 8px;
+    }
+
+
+    .description {
+      font-size: 14px;
+
+      line-height: 1.6;
+
+      color: #687386;
+
+      margin-bottom: 28px;
+    }
+
+
+    .label {
+      display: block;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      margin-bottom: 8px;
+    }
+
+
+    input {
+      width: 100%;
+
+      padding: 14px 16px;
+
+      border: 1px solid #d9dee7;
+
+      border-radius: 10px;
+
+      font-size: 16px;
+
+      outline: none;
+
+      transition: 0.2s;
+    }
+
+
+    input:focus {
+      border-color: #2c6bed;
+
+      box-shadow:
+        0 0 0 3px rgba(44, 107, 237, 0.1);
+    }
+
+
+    .hint {
+      margin-top: 8px;
+
+      font-size: 12px;
+
+      color: #8a93a3;
+    }
+
+
+    button {
+      width: 100%;
+
+      margin-top: 24px;
+
+      padding: 14px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #1f5eff;
+
+      color: white;
+
+      font-size: 16px;
+
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+
+    button:disabled {
+      opacity: 0.6;
+
+      cursor: not-allowed;
+    }
+
+
+    #result {
+      text-align: center;
+
+      margin-top: 18px;
+
+      font-size: 14px;
+
+      line-height: 1.5;
+    }
+
+
+    .success {
+      color: #16803c;
+    }
+
+
+    .error {
+      color: #d93025;
+    }
+
+
+    .loading {
+      color: #687386;
+    }
+
+
+    .footer {
+      text-align: center;
+
+      margin-top: 24px;
+
+      font-size: 11px;
+
+      color: #9aa3b2;
+
+      line-height: 1.5;
+    }
+
+  </style>
 
 </head>
 
@@ -27,44 +211,71 @@
 <body>
 
 
-  <h2>
-    ยืนยันข้อมูลร้านค้า
-  </h2>
+<div class="container">
 
 
-  <p>
-    LINE ID
-  </p>
-
-  <input
-    type="text"
-    id="lineId"
-    placeholder="เช่น ging2541"
-  >
+  <div class="card">
 
 
-  <p>
-    Merchant ID
-  </p>
-
-  <input
-    type="text"
-    id="merchantId"
-    placeholder="กรอก Merchant ID"
-  >
+    <div class="logo">
+      BlueTap
+    </div>
 
 
-  <br><br>
+    <div class="title">
+      เชื่อมบัญชีร้านค้า
+    </div>
 
 
-  <button
-    onclick="submitForm()"
-  >
-    ยืนยัน
-  </button>
+    <div class="description">
+      กรุณากรอก Merchant ID
+      เพื่อเชื่อมบัญชีร้านค้าของคุณกับ LINE OA
+    </div>
 
 
-  <p id="result"></p>
+    <label
+      class="label"
+      for="merchantId"
+    >
+      Merchant ID
+    </label>
+
+
+    <input
+      type="text"
+      id="merchantId"
+      placeholder="กรอก Merchant ID"
+      inputmode="text"
+      maxlength="10"
+      autocomplete="off"
+    >
+
+
+    <div class="hint">
+      กรุณากรอก Merchant ID ให้ครบ 10 ตัวอักษร
+    </div>
+
+
+    <button
+      id="submitButton"
+      onclick="submitForm()"
+    >
+      ยืนยันข้อมูล
+    </button>
+
+
+    <div id="result"></div>
+
+
+    <div class="footer">
+      ข้อมูล LINE และข้อมูลร้านค้าจะถูกบันทึก
+      เพื่อใช้สำหรับการเชื่อมบัญชีเท่านั้น
+    </div>
+
+
+  </div>
+
+</div>
 
 
 <script>
@@ -75,12 +286,13 @@ const LIFF_ID =
 
 
 const WEB_APP_URL =
-  "https://script.google.com/macros/s/AKfycbyKQ7qpjq-XB4P2FgFYs7YvYNnnJ5Cr-_3scRK3Fs_6w2JwqkEulE27BRrVdEBJRBRN/exec";
+  "ใส่_APPS_SCRIPT_WEB_APP_URL";
 
 
-// ============================
-// INITIALIZE LIFF
-// ============================
+/* =========================
+   INITIALIZE LIFF
+========================= */
+
 
 async function main() {
 
@@ -101,65 +313,52 @@ async function main() {
 
     }
 
-
   } catch (error) {
 
     console.error(error);
 
-    document.getElementById(
-      "result"
-    ).innerText =
-      "ไม่สามารถเชื่อมต่อ LINE ได้";
+    showResult(
+      "ไม่สามารถเชื่อมต่อกับ LINE ได้ กรุณาลองใหม่",
+      "error"
+    );
 
   }
 
 }
 
 
-// ============================
-// SUBMIT FORM
-// ============================
+/* =========================
+   SUBMIT
+========================= */
+
 
 async function submitForm() {
 
-  const lineId =
-    document.getElementById(
-      "lineId"
-    ).value.trim();
-
 
   const merchantId =
+    document
+      .getElementById("merchantId")
+      .value
+      .trim();
+
+
+  const button =
     document.getElementById(
-      "merchantId"
-    ).value.trim();
+      "submitButton"
+    );
 
 
-  // ============================
-  // CHECK LINE ID
-  // ============================
-
-  if (!lineId) {
-
-    document.getElementById(
-      "result"
-    ).innerText =
-      "กรุณากรอก LINE ID";
-
-    return;
-
-  }
+  /* ตรวจ Merchant ID */
 
 
-  // ============================
-  // CHECK MERCHANT ID
-  // ============================
+  if (
+    merchantId.length !== 10
+  ) {
 
-  if (merchantId.length !== 10) {
-
-    document.getElementById(
-      "result"
-    ).innerText =
-      "กรุณากรอก Merchant ID ให้ครบ 10 ตัว";
+    showResult(
+      "กรุณากรอก Merchant ID ให้ครบ 10 ตัวอักษร",
+      "error"
+    );
 
     return;
 
@@ -169,9 +368,22 @@ async function submitForm() {
   try {
 
 
-    // ============================
-    // GET LINE PROFILE
-    // ============================
+    button.disabled = true;
+
+    button.innerText =
+      "กำลังเชื่อมบัญชี...";
+
+
+    showResult(
+      "กำลังบันทึกข้อมูล...",
+      "loading"
+    );
+
+
+    /* =========================
+       GET LINE PROFILE
+    ========================= */
+
 
     const profile =
       await liff.getProfile();
@@ -185,9 +397,10 @@ async function submitForm() {
       profile.displayName;
 
 
-    // ============================
-    // SEND TO APPS SCRIPT
-    // ============================
+    /* =========================
+       SEND DATA
+    ========================= */
+
 
     const formData =
       new URLSearchParams();
@@ -196,12 +409,6 @@ async function submitForm() {
     formData.append(
       "userId",
       userId
-    );
-
-
-    formData.append(
-      "lineId",
-      lineId
     );
 
 
@@ -215,12 +422,6 @@ async function submitForm() {
       "merchantId",
       merchantId
     );
-
-
-    document.getElementById(
-      "result"
-    ).innerText =
-      "กำลังบันทึกข้อมูล...";
 
 
     await fetch(
@@ -245,28 +446,70 @@ async function submitForm() {
     );
 
 
-    document.getElementById(
-      "result"
-    ).innerText =
-      "เชื่อมต่อสำเร็จ 🎉";
+    /* =========================
+       SUCCESS
+    ========================= */
+
+
+    showResult(
+      "เชื่อมบัญชีสำเร็จ 🎉",
+      "success"
+    );
+
+
+    button.innerText =
+      "เชื่อมบัญชีสำเร็จ";
 
 
   } catch (error) {
 
+
     console.error(error);
 
-    document.getElementById(
-      "result"
-    ).innerText =
-      "เกิดข้อผิดพลาด กรุณาลองใหม่";
+
+    button.disabled = false;
+
+    button.innerText =
+      "ยืนยันข้อมูล";
+
+
+    showResult(
+      "เกิดข้อผิดพลาด กรุณาลองใหม่",
+      "error"
+    );
 
   }
 
 }
 
 
-main();
+/* =========================
+   MESSAGE
+========================= */
 
+
+function showResult(
+  message,
+  type
+) {
+
+  const result =
+    document.getElementById(
+      "result"
+    );
+
+
+  result.innerText =
+    message;
+
+
+  result.className =
+    type;
+
+}
+
+
+main();
 
 </script>
 
