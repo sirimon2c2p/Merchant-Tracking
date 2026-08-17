@@ -12,10 +12,7 @@
 
   <title>เชื่อมบัญชีร้านค้า | BlueTap</title>
 
-
-  <!-- LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
 
   <style>
 
@@ -23,10 +20,8 @@
       box-sizing: border-box;
     }
 
-
     body {
       margin: 0;
-
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -35,27 +30,21 @@
         sans-serif;
 
       background: #f5f7fa;
-
       color: #172033;
     }
-
 
     .container {
       min-height: 100vh;
 
       display: flex;
-
       justify-content: center;
-
       align-items: center;
 
       padding: 24px;
     }
 
-
     .card {
       width: 100%;
-
       max-width: 420px;
 
       background: #ffffff;
@@ -68,30 +57,24 @@
         0 8px 30px rgba(0, 0, 0, 0.08);
     }
 
-
     .logo {
       text-align: center;
 
       font-size: 24px;
-
       font-weight: 700;
 
       margin-bottom: 28px;
     }
 
-
     .title {
       font-size: 22px;
-
       font-weight: 700;
 
       margin-bottom: 8px;
     }
 
-
     .description {
       font-size: 14px;
-
       line-height: 1.6;
 
       color: #687386;
@@ -99,17 +82,14 @@
       margin-bottom: 28px;
     }
 
-
     .label {
       display: block;
 
       font-size: 14px;
-
       font-weight: 600;
 
       margin-bottom: 8px;
     }
-
 
     input {
       width: 100%;
@@ -127,14 +107,12 @@
       transition: 0.2s;
     }
 
-
     input:focus {
       border-color: #2c6bed;
 
       box-shadow:
         0 0 0 3px rgba(44, 107, 237, 0.1);
     }
-
 
     .hint {
       margin-top: 8px;
@@ -143,7 +121,6 @@
 
       color: #8a93a3;
     }
-
 
     button {
       width: 100%;
@@ -167,13 +144,11 @@
       cursor: pointer;
     }
 
-
     button:disabled {
       opacity: 0.6;
 
       cursor: not-allowed;
     }
-
 
     #result {
       text-align: center;
@@ -185,21 +160,17 @@
       line-height: 1.5;
     }
 
-
     .success {
       color: #16803c;
     }
-
 
     .error {
       color: #d93025;
     }
 
-
     .loading {
       color: #687386;
     }
-
 
     .footer {
       text-align: center;
@@ -220,83 +191,75 @@
 
 <body>
 
+  <div class="container">
 
-<div class="container">
+    <div class="card">
 
-
-  <div class="card">
-
-
-    <div class="logo">
-      BlueTap
-    </div>
+      <div class="logo">
+        BlueTap
+      </div>
 
 
-    <div class="title">
-      เชื่อมบัญชีร้านค้า
-    </div>
+      <div class="title">
+        เชื่อมบัญชีร้านค้า
+      </div>
 
 
-    <div class="description">
-
-      กรุณากรอก Merchant ID
-      เพื่อเชื่อมบัญชีร้านค้าของคุณกับ LINE OA
-
-    </div>
+      <div class="description">
+        กรุณากรอก Merchant ID
+        เพื่อเชื่อมบัญชีร้านค้าของคุณกับ LINE OA
+      </div>
 
 
-    <label
-      class="label"
-      for="merchantId"
-    >
-      Merchant ID
-    </label>
+      <label
+        class="label"
+        for="merchantId"
+      >
+        Merchant ID
+      </label>
 
 
-    <input
-      type="text"
-      id="merchantId"
-      placeholder="กรอก Merchant ID"
-      inputmode="text"
-      maxlength="10"
-      autocomplete="off"
-    >
+      <input
+        type="text"
+        id="merchantId"
+        placeholder="กรอก Merchant ID"
+        inputmode="text"
+        maxlength="10"
+        autocomplete="off"
+      >
 
 
-    <div class="hint">
-      กรุณากรอก Merchant ID ให้ครบ 10 ตัวอักษร
-    </div>
+      <div class="hint">
+        กรุณากรอก Merchant ID ให้ครบ 10 ตัวอักษร
+      </div>
 
 
-    <button
-      id="submitButton"
-      onclick="submitForm()"
-    >
-      ยืนยันข้อมูล
-    </button>
+      <button
+        id="submitButton"
+        onclick="submitForm()"
+      >
+        ยืนยันข้อมูล
+      </button>
 
 
-    <div id="result"></div>
+      <div id="result"></div>
 
 
-    <div class="footer">
-
-      ข้อมูล LINE และข้อมูลร้านค้า
-      จะถูกใช้สำหรับการเชื่อมบัญชีเท่านั้น
+      <div class="footer">
+        ข้อมูลร้านค้าและข้อมูล LINE
+        จะถูกใช้สำหรับการเชื่อมบัญชีเท่านั้น
+      </div>
 
     </div>
-
 
   </div>
-
-</div>
 
 
 <script>
 
 
 // ==========================================
-// LIFF CONFIG
+// LIFF ID
 // ==========================================
 
 const LIFF_ID =
@@ -308,7 +271,7 @@ const LIFF_ID =
 // ==========================================
 
 const WEB_APP_URL =
-  "https://script.google.com/macros/s/AKfycbyKQ7qpjq-XB4P2FgFYs7YvYNnnJ5Cr-_3scRK3Fs_6w2JwqkEulE27BRrVdEBJRBRN/exec";
+  "https://script.google.com/macros/s/AKfycbzOKEk3SJQZNett_NVRIqBUF5dw9cRdJUK4FcOJ9xAPnzKrjVcN7qCyxpisywjVNyZ9/exec";
 
 
 // ==========================================
@@ -320,9 +283,7 @@ async function main() {
   try {
 
     await liff.init({
-
       liffId: LIFF_ID
-
     });
 
 
@@ -355,7 +316,6 @@ async function main() {
 
 async function submitForm() {
 
-
   const merchantId =
     document
       .getElementById("merchantId")
@@ -364,15 +324,10 @@ async function submitForm() {
 
 
   const button =
-    document.getElementById(
-      "submitButton"
-    );
+    document.getElementById("submitButton");
 
 
-  // ========================================
-  // CHECK MERCHANT ID
-  // ========================================
-
+  // ตรวจ Merchant ID
   if (merchantId.length !== 10) {
 
     showResult(
@@ -386,7 +341,6 @@ async function submitForm() {
 
 
   try {
-
 
     button.disabled = true;
 
@@ -417,7 +371,7 @@ async function submitForm() {
 
 
     // ========================================
-    // CREATE REQUEST URL
+    // BUILD REQUEST URL
     // ========================================
 
     const requestUrl =
@@ -430,8 +384,11 @@ async function submitForm() {
       encodeURIComponent(merchantId);
 
 
+    console.log("Request URL:", requestUrl);
+
+
     // ========================================
-    // SEND DATA TO GOOGLE APPS SCRIPT
+    // SEND TO GOOGLE APPS SCRIPT
     // ========================================
 
     await fetch(
@@ -448,20 +405,18 @@ async function submitForm() {
     // ========================================
 
     showResult(
-      "เชื่อมบัญชีสำเร็จ 🎉",
+      "บันทึกข้อมูลสำเร็จ 🎉",
       "success"
     );
 
 
     button.innerText =
-      "เชื่อมบัญชีสำเร็จ";
+      "บันทึกข้อมูลสำเร็จ";
 
 
   } catch (error) {
 
-
     console.error(error);
-
 
     button.disabled = false;
 
@@ -489,9 +444,7 @@ function showResult(
 ) {
 
   const result =
-    document.getElementById(
-      "result"
-    );
+    document.getElementById("result");
 
 
   result.innerText =
@@ -505,13 +458,12 @@ function showResult(
 
 
 // ==========================================
-// START LIFF
+// START
 // ==========================================
 
 main();
 
 </script>
-
 
 </body>
 
