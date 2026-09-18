@@ -1,376 +1,710 @@
-<script>
+<!DOCTYPE html>
+<html lang="th">
 
-const LIFF_ID = "2011658045-4N77aswc";
+<head>
 
-const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbyVWsp7-qk-XZXs5xRrjrVneqnGVzM-rRnERp4RPm8TPws0hd1pioTcCKCWu2AU06e2/exec";
+  <meta charset="UTF-8">
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-let liffReady = false;
-
-
-// =====================================================
-// INIT LIFF
-// =====================================================
-
-async function initLIFF() {
-
-  try {
-
-    await liff.init({
-      liffId: LIFF_ID
-    });
-
-    console.log("LIFF initialized");
-
-    liffReady = true;
+  <title>Merchant Tracking</title>
 
 
-    if (!liff.isLoggedIn()) {
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-      if (!liff.isInClient()) {
 
-        liff.login();
+  <style>
 
-        return;
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+
+      margin: 0;
+
+      min-height: 100vh;
+
+      padding: 20px;
+
+      background: #f7f7f7;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+    }
+
+
+    .card {
+
+      width: 100%;
+
+      max-width: 400px;
+
+      padding: 32px 24px;
+
+      background: #ffffff;
+
+      border-radius: 18px;
+
+      box-shadow:
+        0 4px 20px rgba(0,0,0,0.08);
+
+    }
+
+
+    h1 {
+
+      margin: 0 0 10px;
+
+      text-align: center;
+
+      font-size: 24px;
+
+      color: #222;
+
+    }
+
+
+    .description {
+
+      margin: 0 0 28px;
+
+      text-align: center;
+
+      font-size: 15px;
+
+      line-height: 1.6;
+
+      color: #666;
+
+    }
+
+
+    label {
+
+      display: block;
+
+      margin-bottom: 8px;
+
+      font-size: 14px;
+
+      font-weight: 600;
+
+      color: #333;
+
+    }
+
+
+    input {
+
+      width: 100%;
+
+      height: 48px;
+
+      padding: 0 14px;
+
+      border: 1px solid #ddd;
+
+      border-radius: 10px;
+
+      outline: none;
+
+      font-size: 16px;
+
+    }
+
+
+    input:focus {
+
+      border-color: #06C755;
+
+    }
+
+
+    button {
+
+      width: 100%;
+
+      height: 48px;
+
+      margin-top: 18px;
+
+      border: 0;
+
+      border-radius: 10px;
+
+      background: #06C755;
+
+      color: #fff;
+
+      font-size: 16px;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+    }
+
+
+    button:disabled {
+
+      opacity: 0.6;
+
+      cursor: not-allowed;
+
+    }
+
+
+    #loading {
+
+      display: none;
+
+      margin-top: 16px;
+
+      text-align: center;
+
+      font-size: 14px;
+
+      color: #666;
+
+    }
+
+
+    .spinner {
+
+      display: inline-block;
+
+      width: 16px;
+
+      height: 16px;
+
+      margin-right: 6px;
+
+      vertical-align: -3px;
+
+      border: 2px solid #ddd;
+
+      border-top-color: #06C755;
+
+      border-radius: 50%;
+
+      animation: spin 0.8s linear infinite;
+
+    }
+
+
+    @keyframes spin {
+
+      to {
+        transform: rotate(360deg);
       }
 
     }
 
-  } catch (error) {
 
-    console.error(
-      "LIFF init error:",
-      error
-    );
+    #message {
 
-    showError(
-      "ไม่สามารถเชื่อมต่อกับ LINE ได้<br>" +
-      "กรุณาลองใหม่อีกครั้ง"
-    );
+      display: none;
 
-  }
+      margin-top: 18px;
 
-}
+      padding: 14px;
 
+      border-radius: 10px;
 
-// =====================================================
-// SUBMIT
-// =====================================================
+      text-align: center;
 
-async function submitForm() {
+      font-size: 14px;
 
-  const merchantIdInput =
-    document.getElementById("merchantId");
-
-  const submitBtn =
-    document.getElementById("submitBtn");
-
-  const loading =
-    document.getElementById("loading");
-
-
-  const merchantId =
-    merchantIdInput.value.trim();
-
-
-  if (!merchantId) {
-
-    showError(
-      "กรุณากรอก Merchant ID"
-    );
-
-    merchantIdInput.focus();
-
-    return;
-
-  }
-
-
-  try {
-
-    submitBtn.disabled = true;
-
-    loading.style.display = "block";
-
-    hideMessage();
-
-
-    // =================================================
-    // ตรวจ LIFF
-    // =================================================
-
-    if (!liffReady) {
-
-      await liff.init({
-        liffId: LIFF_ID
-      });
-
-      liffReady = true;
+      line-height: 1.6;
 
     }
 
 
-    if (!liff.isLoggedIn()) {
+    #message.success {
 
-      if (!liff.isInClient()) {
+      display: block;
 
-        liff.login();
+      background: #eefaf2;
 
-        return;
-
-      }
-
-      throw new Error(
-        "ไม่พบการเข้าสู่ระบบ LINE"
-      );
+      color: #16833a;
 
     }
 
 
+    #message.error {
+
+      display: block;
+
+      background: #fff1f1;
+
+      color: #c62828;
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <div class="card">
+
+
+    <h1>
+      เชื่อมบัญชีร้านค้า
+    </h1>
+
+
+    <p class="description">
+      กรุณากรอก Merchant ID<br>
+      เพื่อเชื่อมบัญชีร้านค้าของคุณกับ LINE OA
+    </p>
+
+
+    <div id="formArea">
+
+
+      <label for="merchantId">
+        Merchant ID
+      </label>
+
+
+      <input
+        id="merchantId"
+        type="text"
+        placeholder="กรอก Merchant ID"
+        autocomplete="off"
+      >
+
+
+      <button
+        id="submitBtn"
+        onclick="submitForm()"
+      >
+        ยืนยันข้อมูล
+      </button>
+
+
+      <div id="loading">
+
+        <span class="spinner"></span>
+
+        กำลังบันทึกข้อมูล...
+
+      </div>
+
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+  </div>
+
+
+
+  <script>
+
+
     // =================================================
-    // ดึง LINE PROFILE
+    // CONFIG
     // =================================================
 
-    const profile =
-      await liff.getProfile();
-
-
-    console.log(
-      "LINE User ID:",
-      profile.userId
-    );
-
-    console.log(
-      "Display Name:",
-      profile.displayName
-    );
+    const LIFF_ID =
+      "2011658045-4N77aswc";
 
 
     // =================================================
-    // เตรียมข้อมูล
-    // =================================================
-
-    const data = {
-
-      lineUserId:
-        profile.userId,
-
-      displayName:
-        profile.displayName,
-
-      merchantId:
-        merchantId
-
-    };
-
-
-    console.log(
-      "Data:",
-      data
-    );
-
-
-    // =================================================
-    // สร้าง FORM
+    // สำคัญมาก
     //
-    // ไม่ใช้ fetch
-    // ไม่ใช้ CORS
+    // เอา Web App URL จาก Google Apps Script
+    // มาใส่ตรงนี้
     // =================================================
 
-    const iframe =
-      document.createElement("iframe");
-
-    iframe.name =
-      "submitFrame";
-
-    iframe.style.display =
-      "none";
-
-
-    document.body.appendChild(
-      iframe
-    );
-
-
-    const form =
-      document.createElement("form");
-
-
-    form.method =
-      "POST";
-
-
-    form.action =
-      GOOGLE_SCRIPT_URL;
-
-
-    form.target =
-      "submitFrame";
-
-
-    form.style.display =
-      "none";
-
-
-    const input =
-      document.createElement("input");
-
-
-    input.type =
-      "hidden";
-
-
-    input.name =
-      "data";
-
-
-    input.value =
-      JSON.stringify(data);
-
-
-    form.appendChild(
-      input
-    );
-
-
-    document.body.appendChild(
-      form
-    );
+    const GOOGLE_SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbyVWsp7-qk-XZXs5xRrjrVneqnGVzM-rRnERp4RPm8TPws0hd1pioTcCKCWu2AU06e2/exec";
 
 
     // =================================================
-    // ส่งข้อมูล
+    // INIT LIFF
     // =================================================
 
-    form.submit();
+    async function initLIFF() {
+
+      try {
+
+        await liff.init({
+          liffId: LIFF_ID
+        });
 
 
-    console.log(
-      "Form submitted to Apps Script"
-    );
+        console.log(
+          "LIFF initialized"
+        );
+
+
+        if (!liff.isLoggedIn()) {
+
+          if (!liff.isInClient()) {
+
+            liff.login();
+
+            return;
+
+          }
+
+        }
+
+
+      } catch (error) {
+
+        console.error(
+          "LIFF init error:",
+          error
+        );
+
+
+        showError(
+          "ไม่สามารถเชื่อมต่อกับ LINE ได้<br>" +
+          "กรุณาลองใหม่อีกครั้ง"
+        );
+
+      }
+
+    }
 
 
     // =================================================
-    // รอให้ Apps Script ทำงาน
+    // SUBMIT
     // =================================================
 
-    setTimeout(
-      function() {
+    async function submitForm() {
+
+
+      const merchantId =
+        document
+          .getElementById("merchantId")
+          .value
+          .trim();
+
+
+      const button =
+        document
+          .getElementById("submitBtn");
+
+
+      const loading =
+        document
+          .getElementById("loading");
+
+
+      // -------------------------------
+      // Validate
+      // -------------------------------
+
+      if (!merchantId) {
+
+        showError(
+          "กรุณากรอก Merchant ID"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+
+        button.disabled = true;
+
+        loading.style.display =
+          "block";
+
+        hideMessage();
+
+
+        // -------------------------------
+        // ตรวจ Login
+        // -------------------------------
+
+        if (!liff.isLoggedIn()) {
+
+          if (!liff.isInClient()) {
+
+            liff.login();
+
+            return;
+
+          }
+
+          throw new Error(
+            "ไม่พบ LINE User"
+          );
+
+        }
+
+
+        // -------------------------------
+        // Get Profile
+        // -------------------------------
+
+        const profile =
+          await liff.getProfile();
+
+
+        console.log(
+          "LINE User ID:",
+          profile.userId
+        );
+
+
+        console.log(
+          "Display Name:",
+          profile.displayName
+        );
+
+
+        // -------------------------------
+        // สร้าง Form
+        // -------------------------------
+
+        const form =
+          document.createElement("form");
+
+
+        form.method = "POST";
+
+        form.action =
+          GOOGLE_SCRIPT_URL;
+
+        form.target =
+          "_blank";
+
+
+        form.style.display =
+          "none";
+
+
+        // Merchant ID
+
+        const merchantInput =
+          document.createElement("input");
+
+        merchantInput.type =
+          "hidden";
+
+        merchantInput.name =
+          "merchantId";
+
+        merchantInput.value =
+          merchantId;
+
+
+        // LINE User ID
+
+        const userInput =
+          document.createElement("input");
+
+        userInput.type =
+          "hidden";
+
+        userInput.name =
+          "lineUserId";
+
+        userInput.value =
+          profile.userId;
+
+
+        // Display Name
+
+        const nameInput =
+          document.createElement("input");
+
+        nameInput.type =
+          "hidden";
+
+        nameInput.name =
+          "displayName";
+
+        nameInput.value =
+          profile.displayName;
+
+
+        form.appendChild(
+          merchantInput
+        );
+
+        form.appendChild(
+          userInput
+        );
+
+        form.appendChild(
+          nameInput
+        );
+
+
+        document.body.appendChild(
+          form
+        );
+
+
+        // -------------------------------
+        // ส่งข้อมูล
+        // -------------------------------
+
+        form.submit();
+
+
+        console.log(
+          "Data submitted"
+        );
+
+
+        // -------------------------------
+        // แสดง Success
+        // -------------------------------
+
+        setTimeout(
+          function() {
+
+            loading.style.display =
+              "none";
+
+
+            document
+              .getElementById("formArea")
+              .style.display =
+              "none";
+
+
+            showSuccess(
+              "เชื่อมบัญชีสำเร็จ<br>" +
+              "Merchant ID ถูกบันทึกเรียบร้อยแล้ว"
+            );
+
+          },
+          1000
+        );
+
+
+      } catch (error) {
+
+
+        console.error(
+          "Submit error:",
+          error
+        );
+
 
         loading.style.display =
           "none";
 
 
-        document
-          .getElementById("formArea")
-          .style.display =
-          "none";
+        button.disabled =
+          false;
 
 
-        showSuccess(
-          "เชื่อมบัญชีสำเร็จ<br>" +
-          "Merchant ID ถูกบันทึกเรียบร้อยแล้ว"
+        showError(
+          "ไม่สามารถบันทึกข้อมูลได้<br>" +
+          error.message
+        );
+
+      }
+
+    }
+
+
+    // =================================================
+    // MESSAGE
+    // =================================================
+
+    function showSuccess(text) {
+
+      const message =
+        document.getElementById(
+          "message"
         );
 
 
-        // ล้าง iframe/form
-        setTimeout(
-          function() {
+      message.innerHTML =
+        text;
 
-            form.remove();
 
-            iframe.remove();
+      message.className =
+        "success";
 
-          },
-          3000
+
+      message.style.display =
+        "block";
+
+    }
+
+
+    function showError(text) {
+
+      const message =
+        document.getElementById(
+          "message"
         );
 
 
-      },
-      1500
-    );
+      message.innerHTML =
+        text;
 
 
-  } catch (error) {
-
-    console.error(
-      "Submit error:",
-      error
-    );
+      message.className =
+        "error";
 
 
-    loading.style.display =
-      "none";
+      message.style.display =
+        "block";
+
+    }
 
 
-    submitBtn.disabled =
-      false;
+    function hideMessage() {
+
+      const message =
+        document.getElementById(
+          "message"
+        );
 
 
-    showError(
-      "ไม่สามารถบันทึกข้อมูลได้<br>" +
-      "กรุณาลองใหม่อีกครั้ง"
-    );
+      message.style.display =
+        "none";
 
-  }
-
-}
+    }
 
 
-// =====================================================
-// MESSAGE
-// =====================================================
+    // =================================================
+    // START
+    // =================================================
 
-function showSuccess(text) {
+    initLIFF();
 
-  const message =
-    document.getElementById("message");
-
-  message.innerHTML =
-    text;
-
-  message.className =
-    "success";
-
-  message.style.display =
-    "block";
-
-}
+  </script>
 
 
-function showError(text) {
+</body>
 
-  const message =
-    document.getElementById("message");
-
-  message.innerHTML =
-    text;
-
-  message.className =
-    "error";
-
-  message.style.display =
-    "block";
-
-}
-
-
-function hideMessage() {
-
-  const message =
-    document.getElementById("message");
-
-  message.style.display =
-    "none";
-
-}
-
-
-// =====================================================
-// START
-// =====================================================
-
-initLIFF();
-
-</script>
+</html>
