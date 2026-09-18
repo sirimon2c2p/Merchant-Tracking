@@ -1,150 +1,245 @@
 <!DOCTYPE html>
-<html lang="th">
-
+<html>
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Merchant Tracking</title>
 
-  <!-- LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 40px 20px;
-      text-align: center;
-      background: #ffffff;
+      padding: 24px;
+      min-height: 100vh;
+      background: #f7f7f7;
+      font-family: Arial, sans-serif;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .container {
-      max-width: 500px;
-      margin: auto;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 32px 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
     h1 {
+      margin: 0 0 10px;
+      text-align: center;
       font-size: 24px;
-      margin-bottom: 15px;
+      color: #222;
     }
 
-    #message {
-      color: #555;
+    .subtitle {
+      margin: 0 0 28px;
+      text-align: center;
+      color: #666;
+      font-size: 15px;
       line-height: 1.6;
     }
 
-    #status {
-      margin-top: 20px;
+    label {
+      display: block;
+      margin-bottom: 8px;
       font-size: 14px;
-      color: #888;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #06C755;
+    }
+
+    button {
+      width: 100%;
+      height: 48px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 10px;
+      background: #06C755;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .message {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      line-height: 1.6;
+      font-size: 15px;
     }
 
     .success {
-      color: #06c755;
+      color: #06C755;
     }
 
     .error {
       color: #d93025;
     }
   </style>
-
 </head>
-
 
 <body>
 
   <div class="container">
 
-    <h1>Merchant Tracking</h1>
+    <div class="card">
 
-    <p id="message">
-      กำลังตรวจสอบข้อมูล...
-    </p>
+      <h1>Merchant Tracking</h1>
 
-    <div id="status"></div>
+      <p class="subtitle">
+        กรุณากรอก Merchant ID<br>
+        เพื่อเชื่อมบัญชีร้านค้ากับ LINE OA
+      </p>
+
+      <label for="merchantId">Merchant ID</label>
+
+      <input
+        type="text"
+        id="merchantId"
+        placeholder="กรอก Merchant ID"
+        autocomplete="off"
+      >
+
+      <button id="submitBtn" onclick="submitForm()">
+        ยืนยันข้อมูล
+      </button>
+
+      <div id="loading" class="loading">
+        🔄 กำลังบันทึกข้อมูล...
+      </div>
+
+      <div id="message" class="message"></div>
+
+    </div>
 
   </div>
 
 
   <script>
 
-    // ==================================================
-    // CONFIG
-    // ==================================================
+    const LIFF_ID = "2011658045-4N77aswc";
 
-    const LIFF_ID = "2011137760-Da2862OU";
-
-    const GOOGLE_SCRIPT_URL =
-      "https://script.google.com/macros/s/AKfycbxcuzMhNbehlk_ce2pejXjMqkKcL2CJJgjAcz6r08emaGLSGb48AvQg4gLZOH3Glchr/exec";
+    // ใส่ Google Apps Script Web App URL /exec ของเรา
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVWsp7-qk-XZXs5xRrjrVneqnGVzM-rRnERp4RPm8TPws0hd1pioTcCKCWu2AU06e2/exec";
 
 
-    // ==================================================
-    // MAIN
-    // ==================================================
-
-    async function main() {
+    async function initLIFF() {
 
       try {
-
-        showMessage(
-          "กำลังเชื่อมต่อกับ LINE...",
-          ""
-        );
-
-
-        // ------------------------------------------------
-        // 1. Initialize LIFF
-        // ------------------------------------------------
 
         await liff.init({
           liffId: LIFF_ID
         });
 
-
-        console.log("LIFF initialized");
-
-
-        // ------------------------------------------------
-        // 2. Check Login
-        // ------------------------------------------------
-
         if (!liff.isLoggedIn()) {
 
-          showMessage(
-            "กำลังเข้าสู่ระบบ LINE...",
-            ""
-          );
+          if (liff.isInClient()) {
+            return;
+          }
 
           liff.login();
-
           return;
         }
 
+      } catch (error) {
 
-        // ------------------------------------------------
-        // 3. Get LINE Profile
-        // ------------------------------------------------
+        console.error("LIFF Error:", error);
+
+        showMessage(
+          "ไม่สามารถเชื่อมต่อกับ LINE ได้<br>กรุณาลองใหม่อีกครั้ง",
+          "error"
+        );
+
+      }
+
+    }
+
+
+    async function submitForm() {
+
+      const merchantId =
+        document.getElementById("merchantId").value.trim();
+
+      const submitBtn =
+        document.getElementById("submitBtn");
+
+      const loading =
+        document.getElementById("loading");
+
+
+      if (!merchantId) {
+
+        showMessage(
+          "กรุณากรอก Merchant ID",
+          "error"
+        );
+
+        return;
+      }
+
+
+      try {
+
+        submitBtn.disabled = true;
+
+        loading.style.display = "block";
+
+        document.getElementById("message").style.display = "none";
+
+
+        if (!liff.isLoggedIn()) {
+
+          if (!liff.isInClient()) {
+            liff.login();
+            return;
+          }
+
+          throw new Error("ยังไม่ได้เข้าสู่ระบบ LINE");
+
+        }
+
 
         const profile = await liff.getProfile();
-
-        console.log("LINE Profile:", profile);
-
-
-        const lineUserId =
-          profile.userId || "";
-
-        const displayName =
-          profile.displayName || "";
-
-
-        // ------------------------------------------------
-        // 4. Check Friend Status
-        // ------------------------------------------------
 
         let friendFlag = false;
 
@@ -153,53 +248,20 @@
           const friendship =
             await liff.getFriendship();
 
-          friendFlag =
-            friendship.friendFlag === true;
+          friendFlag = friendship.friendFlag;
 
-          console.log(
-            "Friend Status:",
-            friendFlag
-          );
+        } catch (e) {
 
-        } catch (friendError) {
-
-          console.log(
-            "Friendship check error:",
-            friendError
-          );
+          console.log("Friendship check skipped");
 
         }
 
 
-        // ------------------------------------------------
-        // 5. Get Merchant ID from URL
-        // ------------------------------------------------
+        const data = {
 
-        const urlParams =
-          new URLSearchParams(
-            window.location.search
-          );
+          lineUserId: profile.userId,
 
-
-        const merchantId =
-          urlParams.get("merchantId") || "";
-
-
-        console.log(
-          "Merchant ID:",
-          merchantId
-        );
-
-
-        // ------------------------------------------------
-        // 6. Prepare Data
-        // ------------------------------------------------
-
-        const trackingData = {
-
-          lineUserId: lineUserId,
-
-          displayName: displayName,
+          displayName: profile.displayName,
 
           merchantId: merchantId,
 
@@ -210,129 +272,72 @@
         };
 
 
-        console.log(
-          "Tracking Data:",
-          trackingData
-        );
+        await fetch(GOOGLE_SCRIPT_URL, {
+
+          method: "POST",
+
+          mode: "no-cors",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify(data)
+
+        });
 
 
-        // ------------------------------------------------
-        // 7. Send Data to Google Apps Script
-        // ------------------------------------------------
+        loading.style.display = "none";
 
-        await sendToGoogleSheet(
-          trackingData
-        );
+        document.getElementById("merchantId").style.display = "none";
 
+        document.querySelector("label").style.display = "none";
 
-        // ------------------------------------------------
-        // 8. Show Success
-        // ------------------------------------------------
+        submitBtn.style.display = "none";
+
 
         showMessage(
-          "ปลดล็อกสำเร็จ",
+          "✅ เชื่อมบัญชีสำเร็จ<br>Merchant ID ถูกบันทึกเรียบร้อยแล้ว",
           "success"
         );
-
-        document.getElementById("status")
-          .innerText =
-          "บันทึกข้อมูลเรียบร้อยแล้ว";
 
 
       } catch (error) {
 
         console.error(error);
 
+        loading.style.display = "none";
+
+        submitBtn.disabled = false;
+
         showMessage(
-          "เกิดข้อผิดพลาด",
+          "เกิดข้อผิดพลาด<br>กรุณาลองใหม่อีกครั้ง",
           "error"
         );
 
-        document.getElementById("status")
-          .innerText =
-          error.message || "Unknown error";
-
       }
 
     }
 
 
-    // ==================================================
-    // SEND DATA TO GOOGLE APPS SCRIPT
-    // ==================================================
+    function showMessage(text, type) {
 
-    async function sendToGoogleSheet(data) {
+      const message =
+        document.getElementById("message");
 
-      try {
+      message.innerHTML = text;
 
-        await fetch(
-          GOOGLE_SCRIPT_URL,
-          {
-            method: "POST",
+      message.className =
+        "message " + type;
 
-            mode: "no-cors",
-
-            headers: {
-              "Content-Type":
-                "text/plain;charset=utf-8"
-            },
-
-            body: JSON.stringify(data)
-          }
-        );
-
-
-        console.log(
-          "Data sent to Google Apps Script"
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          "Send data error:",
-          error
-        );
-
-        throw error;
-
-      }
+      message.style.display = "block";
 
     }
 
 
-    // ==================================================
-    // SHOW MESSAGE
-    // ==================================================
-
-    function showMessage(
-      message,
-      type
-    ) {
-
-      const messageElement =
-        document.getElementById(
-          "message"
-        );
-
-      messageElement.innerText =
-        message;
-
-
-      messageElement.className =
-        type;
-
-    }
-
-
-    // ==================================================
-    // START
-    // ==================================================
-
-    main();
+    initLIFF();
 
   </script>
 
 </body>
-
 </html>
