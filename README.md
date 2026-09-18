@@ -2,7 +2,6 @@
 <html lang="th">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -12,8 +11,8 @@
 
   <title>Merchant Tracking</title>
 
+  <!-- LINE LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
 
   <style>
 
@@ -21,14 +20,13 @@
       box-sizing: border-box;
     }
 
-
     body {
       margin: 0;
       padding: 20px;
 
       min-height: 100vh;
 
-      background: #f6f7f8;
+      background: #f7f7f7;
 
       font-family:
         -apple-system,
@@ -38,76 +36,53 @@
         sans-serif;
 
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
 
-
-    .wrapper {
+    .container {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
     }
-
 
     .card {
       background: #ffffff;
 
-      border-radius: 20px;
-
-      padding: 32px 24px;
-
-      box-shadow:
-        0 6px 24px
-        rgba(0, 0, 0, 0.08);
-    }
-
-
-    .logo {
-      width: 64px;
-      height: 64px;
-
-      margin: 0 auto 20px;
-
       border-radius: 16px;
 
-      background: #06c755;
+      padding: 30px 24px;
 
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      font-size: 30px;
+      box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
-
     h1 {
-      margin: 0;
+      margin: 0 0 10px;
 
       text-align: center;
 
       font-size: 24px;
 
+      font-weight: 700;
+
       color: #222;
     }
 
-
-    .description {
-      margin: 10px 0 28px;
+    .subtitle {
+      margin: 0 0 28px;
 
       text-align: center;
-
-      color: #666;
 
       font-size: 15px;
 
       line-height: 1.6;
-    }
 
+      color: #666;
+    }
 
     .form-group {
       margin-bottom: 18px;
     }
-
 
     label {
       display: block;
@@ -121,54 +96,44 @@
       color: #333;
     }
 
-
     input {
       width: 100%;
 
-      height: 50px;
+      height: 48px;
 
-      padding: 0 15px;
+      padding: 0 14px;
 
-      border:
-        1px solid #dcdcdc;
+      border: 1px solid #d9d9d9;
 
       border-radius: 10px;
 
-      background: #fff;
-
       font-size: 16px;
-
-      color: #222;
 
       outline: none;
 
-      transition:
-        border-color 0.2s;
+      background: #fff;
     }
-
 
     input:focus {
-      border-color: #06c755;
+      border-color: #06C755;
     }
-
 
     input::placeholder {
       color: #aaa;
     }
 
-
     button {
       width: 100%;
 
-      height: 50px;
+      height: 48px;
 
       border: 0;
 
       border-radius: 10px;
 
-      background: #06c755;
+      background: #06C755;
 
-      color: #fff;
+      color: white;
 
       font-size: 16px;
 
@@ -177,18 +142,11 @@
       cursor: pointer;
     }
 
-
-    button:active {
-      transform: scale(0.99);
-    }
-
-
     button:disabled {
       opacity: 0.6;
 
       cursor: not-allowed;
     }
-
 
     #loading {
       display: none;
@@ -202,38 +160,30 @@
       font-size: 14px;
     }
 
-
     .spinner {
       display: inline-block;
 
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
 
       margin-right: 7px;
 
-      vertical-align: -4px;
+      vertical-align: -3px;
 
-      border:
-        2px solid #ddd;
+      border: 2px solid #ddd;
 
-      border-top-color:
-        #06c755;
+      border-top-color: #06C755;
 
       border-radius: 50%;
 
-      animation:
-        spin 0.8s linear infinite;
+      animation: spin 0.8s linear infinite;
     }
 
-
     @keyframes spin {
-
       to {
         transform: rotate(360deg);
       }
-
     }
-
 
     #message {
       display: none;
@@ -251,15 +201,13 @@
       line-height: 1.6;
     }
 
-
     #message.success {
       display: block;
 
-      background: #eefbf3;
+      background: #eefaf2;
 
       color: #16833a;
     }
-
 
     #message.error {
       display: block;
@@ -269,11 +217,6 @@
       color: #c62828;
     }
 
-
-    .hidden {
-      display: none !important;
-    }
-
   </style>
 
 </head>
@@ -281,31 +224,21 @@
 
 <body>
 
-
-  <div class="wrapper">
+  <div class="container">
 
     <div class="card">
-
-
-      <div class="logo">
-        💳
-      </div>
-
 
       <h1>
         เชื่อมบัญชีร้านค้า
       </h1>
 
-
-      <p class="description">
+      <p class="subtitle">
         กรุณากรอก Merchant ID<br>
         เพื่อเชื่อมบัญชีร้านค้าของคุณกับ LINE OA
       </p>
 
 
-      <div
-        id="formArea"
-      >
+      <div id="formArea">
 
         <div class="form-group">
 
@@ -325,6 +258,7 @@
 
         <button
           id="submitBtn"
+          type="button"
           onclick="submitForm()"
         >
           ยืนยันข้อมูล
@@ -339,38 +273,39 @@
 
         </div>
 
-
       </div>
 
 
       <div id="message"></div>
-
 
     </div>
 
   </div>
 
 
-
   <script>
 
-
-    // ==================================================
-    // SETTINGS
-    // ==================================================
+    // =====================================================
+    // CONFIG
+    // =====================================================
 
     const LIFF_ID =
       "2011658045-4N77aswc";
 
 
-    // ⚠️ ใส่ Apps Script /exec URL ของคุณตรงนี้
+    /*
+      สำคัญ:
+      ใส่ Google Apps Script Web App URL
+      ที่ลงท้ายด้วย /exec
+    */
+
     const GOOGLE_SCRIPT_URL =
       "https://script.google.com/macros/s/AKfycbyVWsp7-qk-XZXs5xRrjrVneqnGVzM-rRnERp4RPm8TPws0hd1pioTcCKCWu2AU06e2/exec";
 
 
-    // ==================================================
-    // INIT LIFF
-    // ==================================================
+    // =====================================================
+    // LIFF INIT
+    // =====================================================
 
     async function initLIFF() {
 
@@ -380,23 +315,24 @@
           liffId: LIFF_ID
         });
 
-
-        console.log(
-          "LIFF initialized"
-        );
+        console.log("LIFF initialized");
 
 
-        // ถ้าเปิดจาก browser และยังไม่ได้ login
+        /*
+          ถ้าเปิดจาก Browser ปกติ
+          และยังไม่ได้ Login
+        */
+
         if (!liff.isLoggedIn()) {
 
           if (!liff.isInClient()) {
 
             liff.login();
 
+            return;
           }
 
         }
-
 
       } catch (error) {
 
@@ -404,7 +340,6 @@
           "LIFF init error:",
           error
         );
-
 
         showError(
           "ไม่สามารถเชื่อมต่อกับ LINE ได้<br>" +
@@ -416,38 +351,29 @@
     }
 
 
-    // ==================================================
+    // =====================================================
     // SUBMIT
-    // ==================================================
+    // =====================================================
 
     async function submitForm() {
 
-
       const merchantIdInput =
-        document.getElementById(
-          "merchantId"
-        );
+        document.getElementById("merchantId");
 
-
-      const submitButton =
-        document.getElementById(
-          "submitBtn"
-        );
-
+      const submitBtn =
+        document.getElementById("submitBtn");
 
       const loading =
-        document.getElementById(
-          "loading"
-        );
+        document.getElementById("loading");
 
 
       const merchantId =
         merchantIdInput.value.trim();
 
 
-      // ------------------------------
+      // -----------------------------
       // ตรวจ Merchant ID
-      // ------------------------------
+      // -----------------------------
 
       if (!merchantId) {
 
@@ -458,28 +384,21 @@
         merchantIdInput.focus();
 
         return;
-
       }
-
-
-      // ------------------------------
-      // Loading
-      // ------------------------------
-
-      submitButton.disabled = true;
-
-      loading.style.display =
-        "block";
-
-      hideMessage();
 
 
       try {
 
+        submitBtn.disabled = true;
 
-        // ------------------------------
-        // ตรวจ LIFF Login
-        // ------------------------------
+        loading.style.display = "block";
+
+        hideMessage();
+
+
+        // -----------------------------
+        // ตรวจ Login
+        // -----------------------------
 
         if (!liff.isLoggedIn()) {
 
@@ -498,9 +417,9 @@
         }
 
 
-        // ------------------------------
-        // ดึง Profile
-        // ------------------------------
+        // -----------------------------
+        // ดึง LINE Profile
+        // -----------------------------
 
         const profile =
           await liff.getProfile();
@@ -511,16 +430,15 @@
           profile.userId
         );
 
-
         console.log(
           "Display Name:",
           profile.displayName
         );
 
 
-        // ------------------------------
+        // -----------------------------
         // เตรียมข้อมูล
-        // ------------------------------
+        // -----------------------------
 
         const data = {
 
@@ -537,21 +455,21 @@
 
 
         console.log(
-          "Sending data:",
+          "Sending:",
           data
         );
 
 
-        // ------------------------------
-        // ส่ง Google Apps Script
+        // =================================================
+        // ส่งข้อมูลไป Google Apps Script
         //
-        // ใช้ URLSearchParams
-        // เพื่อไม่ให้เกิด CORS preflight
-        // ------------------------------
+        // ใช้ POST + URLSearchParams
+        // ไม่มี JSON Content-Type
+        // เพื่อหลีกเลี่ยง CORS preflight
+        // =================================================
 
         const formData =
           new URLSearchParams();
-
 
         formData.append(
           "data",
@@ -559,27 +477,33 @@
         );
 
 
-        await fetch(
-          GOOGLE_SCRIPT_URL,
-          {
-            method: "POST",
+        const response =
+          await fetch(
+            GOOGLE_SCRIPT_URL,
+            {
+              method: "POST",
 
-            body: formData
-          }
+              body: formData
+            }
+          );
+
+
+        console.log(
+          "Response status:",
+          response.status
         );
 
 
-        // ------------------------------
-        // แสดง Success
-        // ------------------------------
+        // -----------------------------
+        // สำเร็จ
+        // -----------------------------
 
-        loading.style.display =
-          "none";
+        loading.style.display = "none";
 
 
         document
           .getElementById("formArea")
-          .classList.add("hidden");
+          .style.display = "none";
 
 
         showSuccess(
@@ -588,13 +512,7 @@
         );
 
 
-        console.log(
-          "Data sent successfully"
-        );
-
-
       } catch (error) {
-
 
         console.error(
           "Submit error:",
@@ -602,12 +520,9 @@
         );
 
 
-        loading.style.display =
-          "none";
+        loading.style.display = "none";
 
-
-        submitButton.disabled =
-          false;
+        submitBtn.disabled = false;
 
 
         showError(
@@ -620,28 +535,20 @@
     }
 
 
-    // ==================================================
+    // =====================================================
     // MESSAGE
-    // ==================================================
+    // =====================================================
 
     function showSuccess(text) {
 
       const message =
-        document.getElementById(
-          "message"
-        );
+        document.getElementById("message");
 
+      message.innerHTML = text;
 
-      message.innerHTML =
-        text;
+      message.className = "success";
 
-
-      message.className =
-        "success";
-
-
-      message.style.display =
-        "block";
+      message.style.display = "block";
 
     }
 
@@ -649,21 +556,13 @@
     function showError(text) {
 
       const message =
-        document.getElementById(
-          "message"
-        );
+        document.getElementById("message");
 
+      message.innerHTML = text;
 
-      message.innerHTML =
-        text;
+      message.className = "error";
 
-
-      message.className =
-        "error";
-
-
-      message.style.display =
-        "block";
+      message.style.display = "block";
 
     }
 
@@ -671,26 +570,20 @@
     function hideMessage() {
 
       const message =
-        document.getElementById(
-          "message"
-        );
+        document.getElementById("message");
 
-
-      message.style.display =
-        "none";
+      message.style.display = "none";
 
     }
 
 
-    // ==================================================
+    // =====================================================
     // START
-    // ==================================================
+    // =====================================================
 
     initLIFF();
 
-
   </script>
-
 
 </body>
 
